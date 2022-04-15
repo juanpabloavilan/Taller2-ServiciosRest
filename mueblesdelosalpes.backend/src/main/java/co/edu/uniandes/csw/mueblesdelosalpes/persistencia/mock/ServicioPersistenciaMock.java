@@ -15,6 +15,7 @@ package co.edu.uniandes.csw.mueblesdelosalpes.persistencia.mock;
 
 import co.edu.uniandes.csw.mueblesdelosalpes.dto.ExperienciaVendedor;
 import co.edu.uniandes.csw.mueblesdelosalpes.dto.Mueble;
+import co.edu.uniandes.csw.mueblesdelosalpes.dto.Oferta;
 import co.edu.uniandes.csw.mueblesdelosalpes.dto.RegistroVenta;
 import co.edu.uniandes.csw.mueblesdelosalpes.dto.TipoMueble;
 import co.edu.uniandes.csw.mueblesdelosalpes.dto.TipoUsuario;
@@ -28,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import javax.ejb.Stateless;
-
 /**
  * Implementación de los servicios de persistencia
  * @author Juan Sebastián Urrego
@@ -60,7 +59,8 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
      * Lista con los registros de ventas
      */
     private static ArrayList<RegistroVenta> registrosVentas;
-
+    
+    private static ArrayList<Oferta> ofertas;
     //-----------------------------------------------------------
     // Constructor
     //-----------------------------------------------------------
@@ -108,6 +108,9 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
             //Agrega usuarios al sistema
             usuarios.add(new Usuario("admin", "adminadmin", TipoUsuario.Administrador));
             usuarios.add(new Usuario("client", "clientclient", TipoUsuario.Cliente));
+            
+            ofertas=new ArrayList();
+            ofertas.add(new Oferta(1L, "Cliente", 4L, 4000.0));
 
             registrosVentas = new ArrayList<RegistroVenta>();
             Random r = new Random();
@@ -165,6 +168,10 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
         {
             registrosVentas.add((RegistroVenta) obj);
         }
+        else if (obj instanceof Oferta)
+        {
+            ofertas.add((Oferta) obj);
+        }
     }
 
     /**
@@ -215,6 +222,18 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
                 if (usuario.getLogin().equals(editar.getLogin()))
                 {
                     usuarios.set(i, editar);
+                    break;
+                }
+            }
+        }
+        else if (obj instanceof Oferta){
+            
+            Oferta newOferta = (Oferta) obj;
+            Oferta current;
+            for(int i=0; i<ofertas.size();i++){
+                current=ofertas.get(i);
+                if(current.getIdOferta()==newOferta.getIdOferta()){
+                    ofertas.set(i,newOferta);
                     break;
                 }
             }
@@ -284,6 +303,22 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
                 }
             }
         }
+        else if (obj instanceof Oferta)
+        {
+            Oferta currentOferta;
+            Oferta ofertaEliminar = (Oferta) obj;
+            for (int i = 0; i < ofertas.size(); i++)
+            {
+                currentOferta = ofertas.get(i);
+                if (ofertaEliminar.getIdOferta()== currentOferta.getIdOferta())
+                {
+                    ofertas.remove(i);
+                    break;
+                }
+
+            }
+
+        }
     }
 
     /**
@@ -309,7 +344,11 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
         else if (c.equals(RegistroVenta.class))
         {
             return registrosVentas;
-        } 
+        }
+        else if(c.equals(Oferta.class))
+        {
+            return ofertas;
+        }
         else
         {
             return null;
@@ -355,6 +394,16 @@ public class ServicioPersistenciaMock implements IServicioPersistenciaMockRemote
                 if (mue.getLogin().equals(id))
                 {
                     return mue;
+                }
+            }
+        }
+        else if (c.equals(Oferta.class))
+        {
+            for (Object v: findAll(c))
+            {
+                Oferta oferta = (Oferta) v;
+                if(Long.valueOf(oferta.getIdOferta()).equals(id)){
+                    return oferta;
                 }
             }
         }

@@ -11,6 +11,7 @@ import co.edu.uniandes.csw.mueblesdelosalpes.logica.interfaces.IServicioCarritoM
 import co.edu.uniandes.csw.mueblesdelosalpes.logica.interfaces.IServicioCatalogoMockLocal;
 import java.util.List;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
